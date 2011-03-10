@@ -17,72 +17,55 @@ import android.widget.AdapterView.OnItemClickListener;
 
 
 public class Sms extends Activity {
-    /** Called when the activity is first created. */
+	/** Called when the activity is first created. */
 	private ListView list;
 	private static final String DBNAME = "SMS";
 	private static final int VERSION = 1;
-	
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);    
-        setContentView(R.layout.sms);
-        //create new DBhelper instance
-        DBHelper dbhelper = new DBHelper(this, DBNAME, null, VERSION);
-        SQLiteDatabase db = dbhelper.getWritableDatabase();
-        
-        
-        list = (ListView)this.findViewById(R.id.ListView01);
-        list.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-        list.setFocusable(false);
-        list.setOnItemClickListener(new OnItemClickListener() {  
-  
-        	//get the message in selected ListView
-            @Override  
-            public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,  
-                    long arg3) {  
 
-            	Bundle selectedMsg = new Bundle();
-            	selectedMsg.putString("Message", ((TextView) arg1).getText().toString());
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.sms);
+		// create new DBhelper instance
+		DBHelper dbhelper = new DBHelper(this, DBNAME, null, VERSION);
+		SQLiteDatabase db = dbhelper.getWritableDatabase();
 
-            	Intent intent =new Intent();
-            	intent.putExtras(selectedMsg);
-                intent.setClass(Sms.this, Send.class);
-                startActivity(intent);
-                Sms.this.finish();
-            	
-               
-            }  
-        });
+		list = (ListView) this.findViewById(R.id.ListView01);
+		list.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+		list.setFocusable(false);
+		list.setOnItemClickListener(new OnItemClickListener() {
 
-        Cursor cur = db.query(DBHelper.TB_name,new String [] {DBHelper.ID,DBHelper.MESSAGE},null,null,null,null,null);
-        
-        if(cur !=null && cur.getCount()>=0)
-        {
-        	ListAdapter adapter = new SimpleCursorAdapter(this,  
-									                      android.R.layout.simple_list_item_1, cur,  
-									                      new String[] {DBHelper.MESSAGE},  
-									                      new int[] {android.R.id.text1});  
-	        list.setAdapter(adapter);
-        }
-       dbhelper.close();       
-       
-       
-    }
+			// get the message in selected ListView
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+					long arg3) {
 
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-		// TODO Auto-generated method stub
-		switch (keyCode)
-		{
-			case KeyEvent.KEYCODE_BACK: Intent intent =new Intent();
-				                        intent.setClass(Sms.this, Send.class);
-										startActivity(intent);
-										Sms.this.finish();
-										break;
+				Bundle selectedMsg = new Bundle();
+				selectedMsg.putString("Message", ((TextView) arg1).getText()
+						.toString());
+
+				Intent intent = new Intent();
+				intent.putExtras(selectedMsg);
+				intent.setClass(Sms.this, Send.class);
+				startActivity(intent);
+				Sms.this.finish();
+
+			}
+		});
+
+		Cursor cur = db.query(DBHelper.TB_name, new String[] { DBHelper.ID,
+				DBHelper.MESSAGE }, null, null, null, null, null);
+
+		if (cur != null && cur.getCount() >= 0) {
+			ListAdapter adapter = new SimpleCursorAdapter(this,
+					android.R.layout.simple_list_item_1, cur,
+					new String[] { DBHelper.MESSAGE },
+					new int[] { android.R.id.text1 });
+			list.setAdapter(adapter);
 		}
-		return super.onKeyDown(keyCode, event);
+		dbhelper.close();
+
 	}
-	
-	
-    
+
 }
     
