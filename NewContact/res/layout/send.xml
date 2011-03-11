@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent">
+<TextView
+android:text="Please select or input a phone number:" 
+android:id="@+id/Contact" 
+android:layout_width="fill_parent" 
+android:layout_height="wrap_content"/>
+          
+<EditText
+android:id="@+id/inputPhoneNumber"
+android:text=""
+android:layout_width="fill_parent" 
+android:layout_height="wrap_content"
+android:layout_below="@id/Contact"	 
+/>
+<Button
+android:id="@+id/btnSelectContact"
+android:text="Select"
+android:layout_width="wrap_content" 
+android:layout_height="wrap_content"
+android:layout_below="@id/inputPhoneNumber"
+android:layout_alignParentRight="true"
+android:layout_marginLeft="10dip"
+/>
+
+<TextView
+android:text="Please select or input a message:" 
+android:id="@+id/Message" 
+android:layout_width="fill_parent" 
+android:layout_height="wrap_content"
+android:layout_below="@id/btnSelectContact"
+/>
+          
+<EditText
+android:id="@+id/InputMessage"
+android:text=""
+android:layout_width="fill_parent" 
+android:layout_height="wrap_content"
+android:layout_below="@id/Message"	 
+/>
+<Button
+android:id="@+id/btnSelectMsg"
+android:text="Select"
+android:layout_width="wrap_content" 
+android:layout_height="wrap_content"
+android:layout_below="@id/InputMessage"
+android:layout_alignParentRight="true"
+android:layout_marginLeft="10dip"
+/>
+<Button
+android:id="@+id/btnSend"
+android:text="Send"
+android:layout_below="@id/btnSelectMsg"
+android:layout_width="wrap_content" 
+android:layout_height="wrap_content"
+android:layout_centerInParent="true"
+/>
+
+</RelativeLayout>
