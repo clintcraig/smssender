@@ -1,6 +1,8 @@
 package com.jonas.smssender;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+
 import com.jonas.smssender.R;
 
 import android.app.Activity;
@@ -18,16 +20,16 @@ import android.widget.CheckBox;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.SimpleAdapter;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class Contact extends Activity {
 
-	private ArrayList<String> contactName;
-	private ArrayList<String> phoneNum;
+	private ArrayList<HashMap<String, Object>> listItem;
 	private ListView listContact;
-
+    private ArrayList<String> PhoneNum;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -35,9 +37,8 @@ public class Contact extends Activity {
 		setContentView(R.layout.contact);
 		listContact = (ListView) this.findViewById(R.id.listContact);
 
-		contactName = new ArrayList<String>();
-		phoneNum = new ArrayList<String>();
-
+		listItem = new ArrayList<HashMap<String, Object>>();
+		PhoneNum = new ArrayList<String>();
 		Cursor cur = getContentResolver().query(
 				ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
 				null,
@@ -53,20 +54,24 @@ public class Contact extends Activity {
 		// new int[] {android.R.id.text1,android.R.id.text2});
 		// listContact.setAdapter(adapter);
 		// }
-		if (cur != null && cur.getCount() >= 0) {
-			ListAdapter adapter = new SimpleCursorAdapter(
-					this,
-					R.layout.listsytle,
-					cur,
-					new String[] {
-							ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
-							ContactsContract.CommonDataKinds.Phone.NUMBER },
-					new int[] { R.id.topTextView, R.id.bottomTextView });
-			listContact.setAdapter(adapter);
-			listContact.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-			listContact.setFocusable(true);
-			listContact.setItemsCanFocus(true);
+		while(cur.moveToNext()) {
+			HashMap<String, Object> readMap = new HashMap<String, Object>();
+			readMap.put("dispName",cur.getString(cur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)));
+//			 cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+			readMap.put("PhoneNum", cur.getString(cur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
+			listItem.add(readMap);
+
 		}
+        cur.close();
+		ListAdapter adapter = new SimpleAdapter(this, listItem,
+				R.layout.listsytle, new String[] {
+				"dispName",
+				"PhoneNum"},
+				new int[] { R.id.topTextView, R.id.bottomTextView });
+		listContact.setAdapter(adapter);
+		listContact.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+		listContact.setFocusable(true);
+		listContact.setItemsCanFocus(true);
 
 		// remove "-" from Phonenumber
 		listContact.setOnItemClickListener(new OnItemClickListener() {
@@ -91,17 +96,16 @@ public class Contact extends Activity {
 				TextView tvName = (TextView) rl.getChildAt(1);
 				String name = tvName.getText().toString();
 				Log.i("Name", name);
-
-				TextView tvNumber = (TextView) rl.getChildAt(2);
-				String number = tvNumber.getText().toString();
+//
+//				TextView tvNumber = (TextView) rl.getChildAt(2);
+//				number = tvNumber.getText().toString();
 
 				listContact.setSelection(arg2);
 				CheckBox cb = (CheckBox) rl.getChildAt(0);
 				cb.setChecked(true);
 
-				Log.i("Number", number);
-				contactName.add(name);
-				phoneNum.add(number);
+				
+				PhoneNum.add(listItem.get(arg2).get("PhoneNum").toString());
 			}
 
 		});
@@ -132,12 +136,11 @@ public class Contact extends Activity {
 			// Toast.makeText(this, orgContactInfo, Toast.LENGTH_SHORT).show();
 			// }
 			//                      
-			selectedContact.putStringArrayList("Number", phoneNum);
+			selectedContact.putStringArrayList("Number", PhoneNum);
 			intent.putExtras(selectedContact);
 			intent.setClass(Contact.this, Send.class);
 			startActivity(intent);
 			Contact.this.finish();
-
 			break;
 		case 1:
 			intent.setClass(Contact.this, Send.class);
