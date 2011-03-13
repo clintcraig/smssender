@@ -1,6 +1,8 @@
 package com.jonas.smssender;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import com.jonas.smssender.R;
 
@@ -22,9 +24,13 @@ import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
+import android.widget.AdapterView.OnItemSelectedListener;
 
 public class Send extends Activity {
 
@@ -33,18 +39,22 @@ public class Send extends Activity {
 	private Button btnSelectMsg;
 	private Button btnSelectContact;
 	private Button btnSend;
+	private Spinner tbSpinner;
 
 	private static String OrgMsg = "";
 	private static String OrgNumber = "";
 	// define all variables for database
 	private static final String DBNAME = "SMS";
 	private static final int VERSION = 1;
+	private String tableName = "";
 	private static DBHelper dbhelper;
 	// define a handler to handler thread message
 	private Handler sqlCreHandeler;
 	// define a SharedPreferences to save settings
 	private SharedPreferences settings;
 	private boolean sqlCreated;
+
+	private HashMap<String, String> tbNameMap;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +68,41 @@ public class Send extends Activity {
 		btnSend = (Button) this.findViewById(R.id.btnSend);
 		inputMsg = (EditText) this.findViewById(R.id.InputMessage);
 		inputPhoneNumber = (EditText) this.findViewById(R.id.inputPhoneNumber);
+
+		ArrayList<String> test = new ArrayList<String>();
+		test.add("春节");
+		test.add("情人节");
+		test.add("国庆节");
+
+		ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this,
+				android.R.layout.simple_spinner_item, test);
+		spinnerAdapter
+				.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+		tbSpinner = (Spinner) this.findViewById(R.id.dbSpinner);
+		tbSpinner.setAdapter(spinnerAdapter);
+		tbSpinner.setPrompt("请选择数据库");
+		tbSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
+
+			@Override
+			public void onItemSelected(AdapterView<?> arg0, View arg1,
+					int arg2, long arg3) {
+				tableName = arg0.getItemAtPosition(arg2).toString();
+
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> arg0) {
+				// TODO Auto-generated method stub
+
+			}
+
+		});
+		// 初始化Spinner值
+		tbNameMap = new HashMap<String, String>();
+		tbNameMap.put("春节", "Spring");
+		tbNameMap.put("情人节", "Valentine");
+		tbNameMap.put("国庆节", "Nation");
 
 		// Log.i("OrgMsg", OrgMsg);
 		// Log.i("OrgNumber", OrgNumber);
@@ -133,7 +178,11 @@ public class Send extends Activity {
 
 			@Override
 			public void onClick(View arg0) {
+
 				Intent intent = new Intent();
+				Bundle bundle = new Bundle();
+				bundle.putString("tbName", tbNameMap.get(tableName).toString());
+				intent.putExtras(bundle);
 				intent.setClass(Send.this, Sms.class);
 				startActivity(intent);
 			}
