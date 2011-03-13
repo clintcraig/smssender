@@ -264,9 +264,9 @@ public class Send extends Activity {
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
 							// TODO Auto-generated method stub
-							android.os.Process.killProcess(android.os.Process
-									.myPid());
-
+							// android.os.Process.killProcess(android.os.Process
+							// .myPid());
+                            System.exit(0);
 						}
 
 					});
