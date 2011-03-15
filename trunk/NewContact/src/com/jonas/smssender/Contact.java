@@ -100,8 +100,8 @@ public class Contact extends Activity {
 //				TextView tvNumber = (TextView) rl.getChildAt(2);
 //				number = tvNumber.getText().toString();
 
-				CheckBox cb = (CheckBox) rl.getChildAt(0).findViewById(R.id.cbListItem);
-				cb.toggle();
+//				CheckBox cb = (CheckBox) rl.getChildAt(0).findViewById(R.id.cbListItem);
+//				cb.toggle();
 
 				
 				PhoneNum.add(listItem.get(arg2).get("PhoneNum").toString());
