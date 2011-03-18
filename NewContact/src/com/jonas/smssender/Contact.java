@@ -4,32 +4,36 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.jonas.smssender.R;
-
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.util.Log;
-import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.BaseAdapter;
 import android.widget.CheckBox;
-import android.widget.ListAdapter;
+import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.SimpleAdapter;
-import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 
 public class Contact extends Activity {
 
 	private ArrayList<HashMap<String, Object>> listItem;
 	private ListView listContact;
-    private ArrayList<String> PhoneNum;
+	private ArrayList<String> PhoneNum;
+	private int positon;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -54,20 +58,26 @@ public class Contact extends Activity {
 		// new int[] {android.R.id.text1,android.R.id.text2});
 		// listContact.setAdapter(adapter);
 		// }
-		while(cur.moveToNext()) {
+		while (cur.moveToNext()) {
 			HashMap<String, Object> readMap = new HashMap<String, Object>();
-			readMap.put("dispName",cur.getString(cur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)));
-//			 cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-			readMap.put("PhoneNum", cur.getString(cur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
+			readMap
+					.put(
+							"dispName",
+							cur
+									.getString(cur
+											.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)));
+			// cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+			readMap
+					.put(
+							"PhoneNum",
+							cur
+									.getString(cur
+											.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
 			listItem.add(readMap);
 
 		}
-        cur.close();
-		ListAdapter adapter = new SimpleAdapter(this, listItem,
-				R.layout.listsytle, new String[] {
-				"dispName",
-				"PhoneNum"},
-				new int[] { R.id.topTextView, R.id.bottomTextView });
+		cur.close();
+		final MyAdapter adapter = new MyAdapter(this, listItem);
 		listContact.setAdapter(adapter);
 		listContact.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
 		listContact.setFocusable(true);
@@ -80,31 +90,22 @@ public class Contact extends Activity {
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 					long arg3) {
 
-				// Bundle selectedContact = new Bundle();
-				// String number=((TwoLineListItem)
-				// arg1).getText2().getText().toString().replace("-", "");
-				// Log.i("Number", number);
-				// selectedContact.putString("Number", number);
-				//               
-				// Intent intent =new Intent();
-				// intent.putExtras(selectedContact);
-				// intent.setClass(Contact.this, Send.class);
-				// startActivity(intent);
-				// Contact.this.finish();
+				CheckBox cb = (CheckBox) arg0.getChildAt(0).findViewById(
+						R.id.cbListItem);
+				// cb.toggle();
+				/* 记录选中状态 */
 
-				RelativeLayout rl = (RelativeLayout) arg1;
-				TextView tvName = (TextView) rl.getChildAt(1);
-				String name = tvName.getText().toString();
-				Log.i("Name", name);
-//
-//				TextView tvNumber = (TextView) rl.getChildAt(2);
-//				number = tvNumber.getText().toString();
+				if (adapter.checkstate.get(arg2)){
+					PhoneNum.remove(listItem.get(arg2).get("PhoneNum")
+							.toString());
+					cb.setChecked(false);
+				} else {
+					PhoneNum.add(listItem.get(arg2).get("PhoneNum").toString());
+					cb.setChecked(true);
+				}
+				adapter.checkstate.put(arg2, cb.isChecked());
+				positon = arg2;
 
-//				CheckBox cb = (CheckBox) rl.getChildAt(0).findViewById(R.id.cbListItem);
-//				cb.toggle();
-
-				
-				PhoneNum.add(listItem.get(arg2).get("PhoneNum").toString());
 			}
 
 		});
@@ -129,12 +130,6 @@ public class Contact extends Activity {
 		Intent intent = new Intent();
 		switch (item_id) {
 		case 0:
-			// for(int i=0;i<=phoneNum.size()-1;i++)
-			// {
-			// String orgContactInfo = phoneNum.get(i).toString();
-			// Toast.makeText(this, orgContactInfo, Toast.LENGTH_SHORT).show();
-			// }
-			//                      
 			selectedContact.putStringArrayList("Number", PhoneNum);
 			intent.putExtras(selectedContact);
 			intent.setClass(Contact.this, Send.class);
@@ -150,4 +145,129 @@ public class Contact extends Activity {
 		return true;
 	}
 
+	public class MyAdapter extends BaseAdapter {
+
+		private Context context;
+
+		private ArrayList<HashMap<String, Object>> list;
+
+		private LayoutInflater mInflater;
+
+		private HashMap<Integer, Boolean> checkstate;
+
+		public MyAdapter(Context ct, ArrayList<HashMap<String, Object>> lt) {
+
+			context = ct;
+
+			list = lt;
+
+			mInflater = LayoutInflater.from(context);
+
+			checkstate = new HashMap<Integer, Boolean>();
+			for (int i = 0; i < lt.size(); i++) {
+				checkstate.put(i, false);
+			}
+
+		}
+
+		public final class ViewHolder {
+
+			public TextView tvname;
+
+			public TextView tvphone;
+
+			public CheckBox checkbox;
+		}
+
+		@Override
+		public int getCount() {
+
+			// TODO Auto-generated method stub
+
+			// 返回List的size
+
+			if (list != null) {
+
+				return list.size();
+
+			} else {
+
+				return 0;
+
+			}
+
+		}
+
+		@Override
+		public Object getItem(int position) {
+
+			// TODO Auto-generated method stub
+
+			if (list != null) {
+
+				// 返回某个位置的Map<String,Object>
+
+				return list.get(position);
+
+			} else {
+
+				return null;
+
+			}
+		}
+
+		@Override
+		public long getItemId(int position) {
+
+			// TODO Auto-generated method stub
+
+			// 返回当前位置
+
+			return position;
+
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+
+			// TODO Auto-generated method stub
+
+			// 返回某个位置的View
+
+			ViewHolder holder = null;
+
+			if (convertView == null) {
+
+				holder = new ViewHolder();
+
+				convertView = mInflater.inflate(R.layout.listsytle, null);
+
+				holder.tvname = (TextView) convertView
+						.findViewById(R.id.topTextView);
+
+				holder.tvphone = (TextView) convertView
+						.findViewById(R.id.bottomTextView);
+
+				holder.checkbox = (CheckBox) convertView
+						.findViewById(R.id.cbListItem);
+				convertView.setTag(holder);
+
+			} else {
+
+				holder = (ViewHolder) convertView.getTag();
+
+			}
+
+			holder.tvname
+					.setText(list.get(position).get("dispName").toString());
+
+			holder.tvphone.setText(list.get(position).get("PhoneNum")
+					.toString());
+
+			holder.checkbox.setChecked(checkstate.get(position));
+
+			return convertView;
+
+		}
+	}
 }
