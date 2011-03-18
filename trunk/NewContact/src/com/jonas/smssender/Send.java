@@ -57,6 +57,38 @@ public class Send extends Activity {
 	private HashMap<String, String> tbNameMap;
 
 	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+
+		// 取得回传的intent,判断是否包含需要的信息
+		Intent intent = this.getIntent();
+		if (intent.hasExtra("Message")) {
+
+			String newMsg = "";
+			Bundle bundle = this.getIntent().getExtras();
+			newMsg = bundle.getString("Message");
+			inputMsg.setText(newMsg);
+			OrgMsg = newMsg;
+			// Log.i("OrgMsg", OrgMsg);
+		}
+
+		if (intent.hasExtra("Number")) {
+			Bundle bundle = this.getIntent().getExtras();
+			String newNumber = "";
+
+			ArrayList<String> number = bundle.getStringArrayList("Number");
+			for (int i = 0; i < number.size(); i++) {
+				newNumber += number.get(i).replace("-", "") + ";";
+			}
+			inputPhoneNumber.setText(newNumber);
+			OrgNumber = newNumber;
+			// Log.i("OrgMsg", OrgNumber);
+		}
+		
+	}
+
+	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
@@ -112,7 +144,7 @@ public class Send extends Activity {
 		settings = getPreferences(MODE_PRIVATE);
 
 		// 取得回传的intent,判断是否包含需要的信息
-		Intent intent = this.getIntent();
+		/*Intent intent = this.getIntent();
 		if (intent.hasExtra("Message")) {
 
 			String newMsg = "";
@@ -134,7 +166,7 @@ public class Send extends Activity {
 			inputPhoneNumber.setText(newNumber);
 			OrgNumber = newNumber;
 			// Log.i("OrgMsg", OrgNumber);
-		}
+		}*/
 		// handeler messages send from sqlThread
 		sqlCreHandeler = new Handler() {
 
