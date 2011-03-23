@@ -1,4 +1,5 @@
 package com.jonas.smssender;
+
 import com.jonas.smssender.R;
 import android.app.Activity;
 import android.content.Intent;
@@ -14,13 +15,12 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
-
-
 public class Sms extends Activity {
 	/** Called when the activity is first created. */
 	private ListView list;
 	private static final String DBNAME = "SMS";
 	private static final int VERSION = 1;
+	private String tbName = "";
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -29,6 +29,11 @@ public class Sms extends Activity {
 		// create new DBhelper instance
 		DBHelper dbhelper = new DBHelper(this, DBNAME, null, VERSION);
 		SQLiteDatabase db = dbhelper.getWritableDatabase();
+
+		// get tbName from Send Activity
+		Intent intent = getIntent();
+		Bundle bundle = intent.getExtras();
+		tbName = bundle.getString("tbName");
 
 		list = (ListView) this.findViewById(R.id.ListView01);
 		list.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
@@ -53,7 +58,7 @@ public class Sms extends Activity {
 			}
 		});
 
-		Cursor cur = db.query(DBHelper.TB_name, new String[] { DBHelper.ID,
+		Cursor cur = db.query(tbName, new String[] { DBHelper.ID,
 				DBHelper.MESSAGE }, null, null, null, null, null);
 
 		if (cur != null && cur.getCount() >= 0) {
@@ -68,4 +73,3 @@ public class Sms extends Activity {
 	}
 
 }
-    
