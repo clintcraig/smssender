@@ -201,7 +201,7 @@ public class Send extends Activity {
 				Intent intent = new Intent();
 				intent.setClass(Send.this, Contact.class);
 				startActivity(intent);
-				// Send.this.finish();
+				Send.this.finish();
 			}
 
 		});
@@ -298,7 +298,7 @@ public class Send extends Activity {
 							// TODO Auto-generated method stub
 							// android.os.Process.killProcess(android.os.Process
 							// .myPid());
-                            System.exit(0);
+                            Send.this.finish();
 						}
 
 					});
