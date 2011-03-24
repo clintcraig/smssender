@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListAdapter;
@@ -69,6 +70,19 @@ public class Sms extends Activity {
 		}
 		dbhelper.close();
 
+	}
+	//Back Button handler
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		// TODO Auto-generated method stub
+		switch (keyCode) {
+		case KeyEvent.KEYCODE_BACK:
+									Intent intent = new Intent();
+									intent.setClass(Sms.this, Send.class);
+									Sms.this.finish();
+									startActivity(intent);
+		}
+		return super.onKeyDown(keyCode, event);
 	}
 
 }

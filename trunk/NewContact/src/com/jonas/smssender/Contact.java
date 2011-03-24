@@ -11,6 +11,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -95,7 +96,7 @@ public class Contact extends Activity {
 				// cb.toggle();
 				/* ¼ÇÂ¼Ñ¡ÖÐ×´Ì¬ */
 
-				if (adapter.checkstate.get(arg2)){
+				if (adapter.checkstate.get(arg2)) {
 					PhoneNum.remove(listItem.get(arg2).get("PhoneNum")
 							.toString());
 					cb.setChecked(false);
@@ -143,6 +144,19 @@ public class Contact extends Activity {
 			break;
 		}
 		return true;
+	}
+    //Back Button Handler
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		// TODO Auto-generated method stub
+		switch (keyCode) {
+		case KeyEvent.KEYCODE_BACK:
+									Intent intent = new Intent();
+									intent.setClass(Contact.this, Send.class);
+									Contact.this.finish();
+									startActivity(intent);
+		}
+		return super.onKeyDown(keyCode, event);
 	}
 
 	public class MyAdapter extends BaseAdapter {
