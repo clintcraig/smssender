@@ -200,8 +200,9 @@ public class Send extends Activity {
 			public void onClick(View v) {
 				Intent intent = new Intent();
 				intent.setClass(Send.this, Contact.class);
-				startActivity(intent);
 				Send.this.finish();
+				startActivity(intent);
+				
 			}
 
 		});
@@ -216,6 +217,7 @@ public class Send extends Activity {
 				bundle.putString("tbName", tbNameMap.get(tableName).toString());
 				intent.putExtras(bundle);
 				intent.setClass(Send.this, Sms.class);
+				Send.this.finish();
 				startActivity(intent);
 			}
 		});
