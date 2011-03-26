@@ -16,6 +16,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.Intent.ShortcutIconResource;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
@@ -53,7 +54,7 @@ public class Send extends Activity {
 	// define a SharedPreferences to save settings
 	private SharedPreferences settings;
 	private boolean sqlCreated;
-
+    private boolean shortcutCreated;
 	private HashMap<String, String> tbNameMap;
 
 	@Override
@@ -85,7 +86,7 @@ public class Send extends Activity {
 			OrgNumber = newNumber;
 			// Log.i("OrgMsg", OrgNumber);
 		}
-		
+
 	}
 
 	@Override
@@ -105,6 +106,8 @@ public class Send extends Activity {
 		test.add("春节");
 		test.add("情人节");
 		test.add("国庆节");
+		// add Shortcut On Launcher
+		
 
 		ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this,
 				android.R.layout.simple_spinner_item, test);
@@ -144,29 +147,22 @@ public class Send extends Activity {
 		settings = getPreferences(MODE_PRIVATE);
 
 		// 取得回传的intent,判断是否包含需要的信息
-		/*Intent intent = this.getIntent();
-		if (intent.hasExtra("Message")) {
-
-			String newMsg = "";
-			Bundle bundle = this.getIntent().getExtras();
-			newMsg = bundle.getString("Message");
-			inputMsg.setText(newMsg);
-			OrgMsg = newMsg;
-			// Log.i("OrgMsg", OrgMsg);
-		}
-
-		if (intent.hasExtra("Number")) {
-			Bundle bundle = this.getIntent().getExtras();
-			String newNumber = "";
-
-			ArrayList<String> number = bundle.getStringArrayList("Number");
-			for (int i = 0; i < number.size(); i++) {
-				newNumber += number.get(i).replace("-", "") + ";";
-			}
-			inputPhoneNumber.setText(newNumber);
-			OrgNumber = newNumber;
-			// Log.i("OrgMsg", OrgNumber);
-		}*/
+		/*
+		 * Intent intent = this.getIntent(); if (intent.hasExtra("Message")) {
+		 * 
+		 * String newMsg = ""; Bundle bundle = this.getIntent().getExtras();
+		 * newMsg = bundle.getString("Message"); inputMsg.setText(newMsg);
+		 * OrgMsg = newMsg; // Log.i("OrgMsg", OrgMsg); }
+		 * 
+		 * if (intent.hasExtra("Number")) { Bundle bundle =
+		 * this.getIntent().getExtras(); String newNumber = "";
+		 * 
+		 * ArrayList<String> number = bundle.getStringArrayList("Number"); for
+		 * (int i = 0; i < number.size(); i++) { newNumber +=
+		 * number.get(i).replace("-", "") + ";"; }
+		 * inputPhoneNumber.setText(newNumber); OrgNumber = newNumber; //
+		 * Log.i("OrgMsg", OrgNumber); }
+		 */
 		// handeler messages send from sqlThread
 		sqlCreHandeler = new Handler() {
 
@@ -193,6 +189,14 @@ public class Send extends Activity {
 			sqlThread sqlThread = new sqlThread();
 			sqlThread.start();
 		}
+		
+		shortcutCreated = settings.getBoolean("shortcutCreated", false);
+		
+		if(shortcutCreated ==false)
+		{
+			addShortCut();
+		}
+		
 
 		btnSelectContact.setOnClickListener(new Button.OnClickListener() {
 
@@ -202,7 +206,7 @@ public class Send extends Activity {
 				intent.setClass(Send.this, Contact.class);
 				Send.this.finish();
 				startActivity(intent);
-				
+
 			}
 
 		});
@@ -258,6 +262,36 @@ public class Send extends Activity {
 		});
 	}
 
+	// add ShortCut on Launcher
+	public void addShortCut() {
+		Intent shortcut = new Intent(
+				"com.android.launcher.action.INSTALL_SHORTCUT");
+
+		// 快捷方式的名称
+		shortcut.putExtra(Intent.EXTRA_SHORTCUT_NAME,
+				getString(R.string.app_name));
+		// 不允许重复创建
+		shortcut.putExtra("duplicate", false);
+
+		// 指定当前的Activity为快捷方式启动的对象: 如 com.everest.video.VideoPlayer
+		// 这里必须为Intent设置一个action，可以任意(但安装和卸载时该参数必须一致)
+		String action = "com.android.action.test";
+		Intent respondIntent = new Intent(this, this.getClass());
+		respondIntent.setAction(action);
+		shortcut.putExtra(Intent.EXTRA_SHORTCUT_INTENT, respondIntent);
+
+		// 快捷方式的图标
+		ShortcutIconResource iconRes = Intent.ShortcutIconResource.fromContext(
+				this, R.drawable.icon);
+		shortcut.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, iconRes);
+
+		sendBroadcast(shortcut);
+		//modify "shortcutCreated" to true
+		SharedPreferences.Editor editor = settings.edit();
+		editor.putBoolean("shortcutCreated", true);
+		editor.commit();
+	}
+
 	public class SMSReceiver extends BroadcastReceiver {
 		public void onReceive(Context context, Intent intent) {
 
@@ -300,7 +334,7 @@ public class Send extends Activity {
 							// TODO Auto-generated method stub
 							// android.os.Process.killProcess(android.os.Process
 							// .myPid());
-                            Send.this.finish();
+							Send.this.finish();
 						}
 
 					});
