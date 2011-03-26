@@ -275,7 +275,7 @@ public class Send extends Activity {
 
 		// 指定当前的Activity为快捷方式启动的对象: 如 com.everest.video.VideoPlayer
 		// 这里必须为Intent设置一个action，可以任意(但安装和卸载时该参数必须一致)
-		String action = "com.android.action.test";
+		String action = "com.android.action.shortcut";
 		Intent respondIntent = new Intent(this, this.getClass());
 		respondIntent.setAction(action);
 		shortcut.putExtra(Intent.EXTRA_SHORTCUT_INTENT, respondIntent);
