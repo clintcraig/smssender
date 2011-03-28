@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 public class AppWidget extends AppWidgetProvider {
     private String result;
+    private Intent startPetServiceIntent;
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		// TODO Auto-generated method stub
@@ -56,6 +57,21 @@ public class AppWidget extends AppWidgetProvider {
             appWidgetManager.updateAppWidget(appWidgetId, views);
 	}
 	
+	}
+
+	@Override
+	public void onEnabled(Context context) {
+		// TODO Auto-generated method stub
+		super.onEnabled(context);
+		startPetServiceIntent = new Intent("com.jonas.service.SMS_SERVICE");
+		context.startService(startPetServiceIntent);
+	}
+
+	@Override
+	public void onDeleted(Context context, int[] appWidgetIds) {
+		// TODO Auto-generated method stub
+		super.onDeleted(context, appWidgetIds);
+		context.stopService(new Intent("com.jonas.action.SMS_SERVICE"));
 	}
 	
 }
