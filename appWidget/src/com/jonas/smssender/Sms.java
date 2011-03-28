@@ -35,7 +35,7 @@ public class Sms extends Activity {
 		Bundle bundle = intent.getExtras();
 		tbName = bundle.getString("tbName");
 
-		list = (ListView) this.findViewById(R.id.ListView01);
+		list = (ListView) this.findViewById(R.id.listSms);
 		list.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 		list.setFocusable(false);
 		list.setOnItemClickListener(new OnItemClickListener() {
