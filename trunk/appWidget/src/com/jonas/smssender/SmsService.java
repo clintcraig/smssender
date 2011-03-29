@@ -30,7 +30,16 @@ public class SmsService extends Service {
 		// TODO Auto-generated method stub
 		super.onCreate();
 		IntentFilter receiverFilter = new IntentFilter("SMS_SENT");
+		//register smsReciever
 		registerReceiver(smsReciever, receiverFilter);
+	}
+
+	@Override
+	public void onDestroy() {
+		// TODO Auto-generated method stub
+		super.onDestroy();
+		//unregister smsReciever
+		unregisterReceiver(smsReciever);
 	}
 
 	public BroadcastReceiver smsReciever = new BroadcastReceiver() {
