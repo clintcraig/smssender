@@ -11,8 +11,8 @@ import android.widget.RemoteViews;
 import android.widget.Toast;
 
 public class AppWidget extends AppWidgetProvider {
-    private String result;
-    private Intent startPetServiceIntent;
+    public static String result;
+//    private Intent startPetServiceIntent;
 	
 
 	@Override
@@ -42,8 +42,8 @@ public class AppWidget extends AppWidgetProvider {
 	public void onEnabled(Context context) {
 		// TODO Auto-generated method stub
 		super.onEnabled(context);
-		startPetServiceIntent = new Intent("com.jonas.service.SMS_SERVICE");
-		context.startService(startPetServiceIntent);
+		/*startPetServiceIntent = new Intent("com.jonas.action.SMS_SERVICE");
+		context.startService(startPetServiceIntent);*/
 	}
 
 	@Override
@@ -54,26 +54,4 @@ public class AppWidget extends AppWidgetProvider {
 		
 	}
 	
-	@Override
-	public void onReceive(Context context, Intent intent) {
-		// TODO Auto-generated method stub
-		int resultCode = getResultCode();
-
-		switch (resultCode) {
-		case Activity.RESULT_OK:
-			result = "Message Sent";
-			break;
-		case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
-
-			break;
-		case SmsManager.RESULT_ERROR_NO_SERVICE:
-
-			break;
-		case SmsManager.RESULT_ERROR_NULL_PDU:
-
-			break;
-		case SmsManager.RESULT_ERROR_RADIO_OFF:
-			break;
-		}
-	}
 }

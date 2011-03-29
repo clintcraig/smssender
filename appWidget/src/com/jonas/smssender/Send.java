@@ -56,7 +56,9 @@ public class Send extends Activity {
 	private boolean sqlCreated;
     private boolean shortcutCreated;
 	private HashMap<String, String> tbNameMap;
-
+	
+	private Intent startPetServiceIntent;
+	
 	@Override
 	protected void onResume() {
 		// TODO Auto-generated method stub
@@ -107,6 +109,12 @@ public class Send extends Activity {
 		test.add("情人节");
 		test.add("国庆节");
 		// add Shortcut On Launcher
+		
+		
+		startPetServiceIntent = new Intent("com.jonas.action.SMS_SERVICE");
+		startService(startPetServiceIntent);
+		
+		
 		
 
 		ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this,
@@ -241,9 +249,9 @@ public class Send extends Activity {
 					SmsManager smsManager = SmsManager.getDefault();
 					PendingIntent pintent = PendingIntent.getBroadcast(
 							Send.this, 0, new Intent("SMS_SENT"), 0);
-					SMSReceiver smsreceiver = new SMSReceiver();
+					/*SMSReceiver smsreceiver = new SMSReceiver();
 					IntentFilter receiverFilter = new IntentFilter("SMS_SENT");
-					registerReceiver(smsreceiver, receiverFilter);
+					registerReceiver(smsreceiver, receiverFilter);*/
 					for (int i = 0; i < smsNumberGroup.length; i++) {
 
 						smsManager.sendTextMessage(smsNumberGroup[i], null,
@@ -292,7 +300,7 @@ public class Send extends Activity {
 		editor.commit();
 	}
 
-	public class SMSReceiver extends BroadcastReceiver {
+	/*public class SMSReceiver extends BroadcastReceiver {
 		public void onReceive(Context context, Intent intent) {
 
 			int resultCode = getResultCode();
@@ -315,7 +323,7 @@ public class Send extends Activity {
 				break;
 			}
 		}
-	}
+	}*/
 
 	// 监听BACK按钮，显示退出对话框
 	@Override
