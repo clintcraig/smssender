@@ -57,7 +57,7 @@ public class Send extends Activity {
     private boolean shortcutCreated;
 	private HashMap<String, String> tbNameMap;
 	//define a Intent to start Service
-	private Intent startPetServiceIntent;
+	private Intent serviceIntent;
 	
 	@Override
 	protected void onResume() {
@@ -111,8 +111,8 @@ public class Send extends Activity {
 		// add Shortcut On Launcher
 		
 		//start a smsservice
-		startPetServiceIntent = new Intent("com.jonas.action.SMS_SERVICE");
-		startService(startPetServiceIntent);
+		serviceIntent = new Intent("com.jonas.action.SMS_SERVICE");
+		startService(serviceIntent);
 
 		ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this,
 				android.R.layout.simple_spinner_item, test);
@@ -376,6 +376,13 @@ public class Send extends Activity {
 			sqlCreHandeler.sendMessage(toMain);
 		}
 
+	}
+
+	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		super.onDestroy();
+		stopService(serviceIntent);
 	}
 
 }
