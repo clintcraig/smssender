@@ -12,19 +12,19 @@
 				<action android:name="android.intent.action.MAIN" />
 				<category android:name="android.intent.category.LAUNCHER" />
 			</intent-filter>
-			<service android:name=".SmsService">
-				<intent-filter>
-					<action android:name="com.jonas.action.SMS_SERVICE">
-					</action>
-					<category android:name="android.intent.category.DEFAULT">
-					</category>
-				</intent-filter>
-			</service>
+
 		</activity>
 		<activity android:name=".Contact" android:label="Contact">
 
 		</activity>
-
+		<service android:name=".SmsService">
+			<intent-filter>
+				<action android:name="com.jonas.action.SMS_SERVICE">
+				</action>
+				<category android:name="android.intent.category.DEFAULT">
+				</category>
+			</intent-filter>
+		</service>
 
 		<receiver android:name=".AppWidget">
 			<intent-filter>
