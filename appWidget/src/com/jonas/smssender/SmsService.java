@@ -8,9 +8,11 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.telephony.SmsManager;
 import android.widget.RemoteViews;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class SmsService extends Service {
@@ -29,7 +31,7 @@ public class SmsService extends Service {
 	public void onCreate() {
 		// TODO Auto-generated method stub
 		super.onCreate();
-		IntentFilter receiverFilter = new IntentFilter("SMS_SENT");
+		IntentFilter receiverFilter = new IntentFilter("SMS");
 		//register smsReciever
 		registerReceiver(smsReciever, receiverFilter);
 	}
@@ -46,12 +48,13 @@ public class SmsService extends Service {
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			// TODO Auto-generated method stub
 			int resultCode = getResultCode();
-
+			String smsNumber = "";
+			Bundle bundle = intent.getExtras();
+			smsNumber = bundle.getString("SmsNumber");
 			switch (resultCode) {
 			case Activity.RESULT_OK:
-				Toast.makeText(getApplicationContext(), "sms sent",
+				Toast.makeText(getApplicationContext(), smsNumber+"发送成功！",
 						Toast.LENGTH_SHORT).show();
 				//get appWidgetMannager/remoteViews/componentName for update AppWidget
 				appWidgetMannager = AppWidgetManager
@@ -60,7 +63,7 @@ public class SmsService extends Service {
 						R.layout.widget);
 				componentName = new ComponentName(SmsService.this,
 						AppWidget.class);
-				remoteViews.setTextViewText(R.id.tvWidget, "发送成功");
+				remoteViews.setTextViewText(R.id.tvWidget,smsNumber+"发送成功！");
 				appWidgetMannager.updateAppWidget(componentName, remoteViews);
 
 				break;
