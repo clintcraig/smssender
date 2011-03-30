@@ -200,7 +200,7 @@ public class Send extends Activity {
 		if (shortcutCreated == false) {
 			addShortCut();
 		}
-		//Select Contacts Button Listener
+		// Select Contacts Button Listener
 		btnSelectContact.setOnClickListener(new Button.OnClickListener() {
 
 			@Override
@@ -213,7 +213,7 @@ public class Send extends Activity {
 			}
 
 		});
-        //Select Messages Button Listener
+		// Select Messages Button Listener
 		btnSelectMsg.setOnClickListener(new Button.OnClickListener() {
 
 			@Override
@@ -228,7 +228,7 @@ public class Send extends Activity {
 				startActivity(intent);
 			}
 		});
-		//Send Button Listener
+		// Send Button Listener
 		btnSend.setOnClickListener(new Button.OnClickListener() {
 
 			@Override
@@ -239,6 +239,7 @@ public class Send extends Activity {
 		});
 
 	}
+
 	// 短信发送部分
 	public void sendTextMsg() {
 		String smsNumber = inputPhoneNumber.getText().toString();
@@ -262,7 +263,7 @@ public class Send extends Activity {
 				intent.putExtra("SmsNumber", phoneNum);
 				// Use getBroadcast() got a PendingIntent Broadcast Instance
 				PendingIntent pintent = PendingIntent.getBroadcast(Send.this,
-						0, intent,PendingIntent.FLAG_UPDATE_CURRENT);
+						0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 				// Use SednTextMessage() send TextMessage
 				smsManager.sendTextMessage(smsNumberGroup[i], null, smsContent,
 						pintent, null);
