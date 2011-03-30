@@ -7,7 +7,7 @@
 
 		</activity>
 		<activity android:name=".Send" android:label="节日短信"
-		          android:windowSoftInputMode="stateVisible|adjustPan">
+			android:windowSoftInputMode="stateVisible|adjustPan">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 				<category android:name="android.intent.category.LAUNCHER" />
@@ -17,25 +17,23 @@
 
 		</activity>
 		<service android:name=".SmsService">
-		<intent-filter>
+			<intent-filter>
 				<action android:name="com.jonas.action.SMS_SERVICE">
 				</action>
 				<category android:name="android.intent.category.DEFAULT">
 				</category>
 			</intent-filter>
 		</service>
-		<service android:name=".SMSReceiver">
-		</service>
-		
-		<receiver android:name=".AppWidget" >
-		    <intent-filter>
-		        <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-		    </intent-filter>
-	    <meta-data android:name="android.appwidget.provider"
-	               android:resource="@xml/appwidget_info">
-	    </meta-data>
+
+		<receiver android:name=".AppWidget">
+			<intent-filter>
+				<action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+			</intent-filter>
+			<meta-data android:name="android.appwidget.provider"
+				android:resource="@xml/appwidget_info">
+			</meta-data>
 		</receiver>
-	
+
 	</application>
 	<uses-sdk android:minSdkVersion="8" />
 	<uses-permission android:name="android.permission.READ_CONTACTS" />
