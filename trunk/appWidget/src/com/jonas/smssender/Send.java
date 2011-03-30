@@ -54,11 +54,11 @@ public class Send extends Activity {
 	// define a SharedPreferences to save settings
 	private SharedPreferences settings;
 	private boolean sqlCreated;
-    private boolean shortcutCreated;
+	private boolean shortcutCreated;
 	private HashMap<String, String> tbNameMap;
-	//define a Intent to start Service
+	// define a Intent to start Service
 	private Intent serviceIntent;
-	
+
 	@Override
 	protected void onResume() {
 		// TODO Auto-generated method stub
@@ -109,8 +109,8 @@ public class Send extends Activity {
 		test.add("情人节");
 		test.add("国庆节");
 		// add Shortcut On Launcher
-		
-		//start a smsservice
+
+		// start a smsservice
 		serviceIntent = new Intent("com.jonas.action.SMS_SERVICE");
 		startService(serviceIntent);
 
@@ -194,15 +194,13 @@ public class Send extends Activity {
 			sqlThread sqlThread = new sqlThread();
 			sqlThread.start();
 		}
-		
+
 		shortcutCreated = settings.getBoolean("shortcutCreated", false);
-		
-		if(shortcutCreated ==false)
-		{
+
+		if (shortcutCreated == false) {
 			addShortCut();
 		}
-		
-
+		//Select Contacts Button Listener
 		btnSelectContact.setOnClickListener(new Button.OnClickListener() {
 
 			@Override
@@ -215,7 +213,7 @@ public class Send extends Activity {
 			}
 
 		});
-
+        //Select Messages Button Listener
 		btnSelectMsg.setOnClickListener(new Button.OnClickListener() {
 
 			@Override
@@ -230,41 +228,53 @@ public class Send extends Activity {
 				startActivity(intent);
 			}
 		});
-		// 短信发送部分
+		//Send Button Listener
 		btnSend.setOnClickListener(new Button.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				String smsNumber = inputPhoneNumber.getText().toString();
-				String smsContent = inputMsg.getText().toString();
-				if (smsNumber.length() == 0 || smsContent.length() == 0) {
-					Toast.makeText(getApplicationContext(),
+
+				sendTextMsg();
+			}
+		});
+
+	}
+	// 短信发送部分
+	public void sendTextMsg() {
+		String smsNumber = inputPhoneNumber.getText().toString();
+		String smsContent = inputMsg.getText().toString();
+		if (smsNumber.length() == 0 || smsContent.length() == 0) {
+			Toast
+					.makeText(getApplicationContext(),
 							"Please check phone number and message",
 							Toast.LENGTH_SHORT).show();
-				} else {
-					String[] smsNumberGroup = smsNumber.split(";");
-					SmsManager smsManager = SmsManager.getDefault();
-					PendingIntent pintent = PendingIntent.getBroadcast(
-							Send.this, 0, new Intent("SMS_SENT"), 0);
-					/*SMSReceiver smsreceiver = new SMSReceiver();
-					IntentFilter receiverFilter = new IntentFilter("SMS_SENT");
-					registerReceiver(smsreceiver, receiverFilter);*/
-					for (int i = 0; i < smsNumberGroup.length; i++) {
+		} else {
+			String[] smsNumberGroup = smsNumber.split(";");
 
-						smsManager.sendTextMessage(smsNumberGroup[i], null,
-								smsContent, pintent, null);
-						Toast.makeText(
-								getApplicationContext(),
-								"Number is :" + smsNumberGroup[i].toString()
-										+ "SMS Content is :"
-										+ inputMsg.getText().toString(),
-								Toast.LENGTH_SHORT).show();
-					}
-				}
+			for (int i = 0; i < smsNumberGroup.length; i++) {
+				// Use getDefault() got a SmsManager Instance
+				SmsManager smsManager = SmsManager.getDefault();
+				// Create a Intent name is SMS
+				Intent intent = new Intent("SMS");
+				// Put Sending Phonenum into intent
+				String phoneNum = smsNumberGroup[i];
+				Log.i("PhoneNum", phoneNum);
+				intent.putExtra("SmsNumber", phoneNum);
+				// Use getBroadcast() got a PendingIntent Broadcast Instance
+				PendingIntent pintent = PendingIntent.getBroadcast(Send.this,
+						0, intent,PendingIntent.FLAG_UPDATE_CURRENT);
+				// Use SednTextMessage() send TextMessage
+				smsManager.sendTextMessage(smsNumberGroup[i], null, smsContent,
+						pintent, null);
 
+				Toast.makeText(
+						getApplicationContext(),
+						"Number is :" + smsNumberGroup[i].toString() + "\n"
+								+ "SMS Content is :"
+								+ inputMsg.getText().toString(),
+						Toast.LENGTH_SHORT).show();
 			}
-
-		});
+		}
 	}
 
 	// add ShortCut on Launcher
@@ -291,36 +301,29 @@ public class Send extends Activity {
 		shortcut.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, iconRes);
 
 		sendBroadcast(shortcut);
-		//modify "shortcutCreated" to true
+		// modify "shortcutCreated" to true
 		SharedPreferences.Editor editor = settings.edit();
 		editor.putBoolean("shortcutCreated", true);
 		editor.commit();
 	}
 
-	/*public class SMSReceiver extends BroadcastReceiver {
-		public void onReceive(Context context, Intent intent) {
-
-			int resultCode = getResultCode();
-
-			switch (resultCode) {
-			case Activity.RESULT_OK:
-				Toast.makeText(getApplicationContext(), "sms sent",
-						Toast.LENGTH_SHORT).show();
-				break;
-			case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
-
-				break;
-			case SmsManager.RESULT_ERROR_NO_SERVICE:
-
-				break;
-			case SmsManager.RESULT_ERROR_NULL_PDU:
-
-				break;
-			case SmsManager.RESULT_ERROR_RADIO_OFF:
-				break;
-			}
-		}
-	}*/
+	/*
+	 * public class SMSReceiver extends BroadcastReceiver { public void
+	 * onReceive(Context context, Intent intent) {
+	 * 
+	 * int resultCode = getResultCode();
+	 * 
+	 * switch (resultCode) { case Activity.RESULT_OK:
+	 * Toast.makeText(getApplicationContext(), "sms sent",
+	 * Toast.LENGTH_SHORT).show(); break; case
+	 * SmsManager.RESULT_ERROR_GENERIC_FAILURE:
+	 * 
+	 * break; case SmsManager.RESULT_ERROR_NO_SERVICE:
+	 * 
+	 * break; case SmsManager.RESULT_ERROR_NULL_PDU:
+	 * 
+	 * break; case SmsManager.RESULT_ERROR_RADIO_OFF: break; } } }
+	 */
 
 	// 监听BACK按钮，显示退出对话框
 	@Override
