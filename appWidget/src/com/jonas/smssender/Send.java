@@ -213,7 +213,7 @@ public class Send extends Activity {
 			}
 
 		});
-		// Select Messages Button Listener
+		// Select Message Button Listener
 		btnSelectMsg.setOnClickListener(new Button.OnClickListener() {
 
 			@Override
@@ -240,7 +240,9 @@ public class Send extends Activity {
 
 	}
 
-	// 短信发送部分
+	/**
+	 * Sms Send function
+	 */
 	public void sendTextMsg() {
 		String smsNumber = inputPhoneNumber.getText().toString();
 		String smsContent = inputMsg.getText().toString();
@@ -278,7 +280,9 @@ public class Send extends Activity {
 		}
 	}
 
-	// add ShortCut on Launcher
+	/**
+	 * add ShortCut on Launcher
+	 */
 	public void addShortCut() {
 		Intent shortcut = new Intent(
 				"com.android.launcher.action.INSTALL_SHORTCUT");
