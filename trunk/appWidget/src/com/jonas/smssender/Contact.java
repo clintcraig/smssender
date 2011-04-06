@@ -254,7 +254,7 @@ public class Contact extends Activity {
 
 				holder = new ViewHolder();
 
-				convertView = mInflater.inflate(R.layout.listsytle, null);
+				convertView = mInflater.inflate(R.layout.liststyle, null);
 
 				holder.tvname = (TextView) convertView
 						.findViewById(R.id.topTextView);
