@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
@@ -46,8 +47,12 @@ public class Sms extends Activity {
 					long arg3) {
 
 				Bundle selectedMsg = new Bundle();
-				selectedMsg.putString("Message", ((TextView) arg1).getText()
-						.toString());
+				//get LinearLayout and TextView instance,Because overwrite ListView Layout 
+				LinearLayout rl = (LinearLayout) arg1;
+				TextView tvMsg = (TextView) rl.getChildAt(0);
+
+				String strMsg = tvMsg.getText().toString();
+				selectedMsg.putString("Message", strMsg);
 
 				Intent intent = new Intent();
 				intent.putExtras(selectedMsg);
@@ -63,24 +68,24 @@ public class Sms extends Activity {
 
 		if (cur != null && cur.getCount() >= 0) {
 			ListAdapter adapter = new SimpleCursorAdapter(this,
-					android.R.layout.simple_list_item_1, cur,
-					new String[] { DBHelper.MESSAGE },
-					new int[] { android.R.id.text1 });
+					R.layout.smsstyle, cur, new String[] { DBHelper.MESSAGE },
+					new int[] { R.id.tvSms });
 			list.setAdapter(adapter);
 		}
 		dbhelper.close();
 
 	}
-	//Back Button handler
+
+	// Back Button handler
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		// TODO Auto-generated method stub
 		switch (keyCode) {
 		case KeyEvent.KEYCODE_BACK:
-									Intent intent = new Intent();
-									intent.setClass(Sms.this, Send.class);
-									Sms.this.finish();
-									startActivity(intent);
+			Intent intent = new Intent();
+			intent.setClass(Sms.this, Send.class);
+			Sms.this.finish();
+			startActivity(intent);
 		}
 		return super.onKeyDown(keyCode, event);
 	}
