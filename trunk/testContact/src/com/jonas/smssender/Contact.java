@@ -32,9 +32,10 @@ public class Contact extends Activity {
 
 	private ArrayList<HashMap<String, Object>> listItem;
 	private ListView listContact;
+	// Define Two ArrayList use to save user selected Contact's PhoneNum and
+	// DispName
 	private ArrayList<String> PhoneNum;
 	private ArrayList<String> DispName;
-	private int positon;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +47,7 @@ public class Contact extends Activity {
 		listItem = new ArrayList<HashMap<String, Object>>();
 		PhoneNum = new ArrayList<String>();
 		DispName = new ArrayList<String>();
-		
+
 		Cursor cur = getContentResolver().query(
 				ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
 				null,
@@ -96,12 +97,13 @@ public class Contact extends Activity {
 
 				CheckBox cb = (CheckBox) arg0.getChildAt(0).findViewById(
 						R.id.cbListItem);
-				// cb.toggle();
 				/* ¼ÇÂ¼Ñ¡ÖÐ×´Ì¬ */
 
 				if (adapter.checkstate.get(arg2)) {
-					PhoneNum.remove(listItem.get(arg2).get("PhoneNum").toString());
-					DispName.remove(listItem.get(arg2).get("dispName").toString());
+					PhoneNum.remove(listItem.get(arg2).get("PhoneNum")
+							.toString());
+					DispName.remove(listItem.get(arg2).get("dispName")
+							.toString());
 					cb.setChecked(false);
 				} else {
 					PhoneNum.add(listItem.get(arg2).get("PhoneNum").toString());
@@ -109,7 +111,6 @@ public class Contact extends Activity {
 					cb.setChecked(true);
 				}
 				adapter.checkstate.put(arg2, cb.isChecked());
-				positon = arg2;
 
 			}
 
@@ -135,7 +136,7 @@ public class Contact extends Activity {
 		Intent intent = new Intent();
 		switch (item_id) {
 		case 0:
-			
+
 			selectedContact.putStringArrayList("Number", PhoneNum);
 			selectedContact.putStringArrayList("DispName", DispName);
 			intent.putExtras(selectedContact);
@@ -151,16 +152,17 @@ public class Contact extends Activity {
 		}
 		return true;
 	}
-    //Back Button Handler
+
+	// Back Button Handler
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		// TODO Auto-generated method stub
 		switch (keyCode) {
 		case KeyEvent.KEYCODE_BACK:
-									Intent intent = new Intent();
-									intent.setClass(Contact.this, Send.class);
-									Contact.this.finish();
-									startActivity(intent);
+			Intent intent = new Intent();
+			intent.setClass(Contact.this, Send.class);
+			Contact.this.finish();
+			startActivity(intent);
 		}
 		return super.onKeyDown(keyCode, event);
 	}
