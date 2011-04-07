@@ -61,7 +61,6 @@ public class Send extends Activity {
 
 	@Override
 	protected void onResume() {
-		// TODO Auto-generated method stub
 		super.onResume();
 
 		// 取得回传的intent,判断是否包含需要的信息
@@ -73,20 +72,24 @@ public class Send extends Activity {
 			newMsg = bundle.getString("Message");
 			inputMsg.setText(newMsg);
 			OrgMsg = newMsg;
-			// Log.i("OrgMsg", OrgMsg);
 		}
 
 		if (intent.hasExtra("Number")) {
 			Bundle bundle = this.getIntent().getExtras();
-			String newNumber = "";
+			String contactInfo = "";
 
 			ArrayList<String> number = bundle.getStringArrayList("Number");
+			ArrayList<String> dispName = bundle.getStringArrayList("DispName");
 			for (int i = 0; i < number.size(); i++) {
-				newNumber += number.get(i).replace("-", "") + ";";
+
+				String contactName = dispName.get(i);
+				String contactNum = number.get(i).replace("-", "");
+
+				contactInfo += contactName + "<" + contactNum + ">" + ";"
+						+ "\n";
 			}
-			inputPhoneNumber.setText(newNumber);
-			OrgNumber = newNumber;
-			// Log.i("OrgMsg", OrgNumber);
+			inputPhoneNumber.setText(contactInfo);
+			OrgNumber = contactInfo;
 		}
 
 	}
@@ -151,23 +154,6 @@ public class Send extends Activity {
 
 		settings = getPreferences(MODE_PRIVATE);
 
-		// 取得回传的intent,判断是否包含需要的信息
-		/*
-		 * Intent intent = this.getIntent(); if (intent.hasExtra("Message")) {
-		 * 
-		 * String newMsg = ""; Bundle bundle = this.getIntent().getExtras();
-		 * newMsg = bundle.getString("Message"); inputMsg.setText(newMsg);
-		 * OrgMsg = newMsg; // Log.i("OrgMsg", OrgMsg); }
-		 * 
-		 * if (intent.hasExtra("Number")) { Bundle bundle =
-		 * this.getIntent().getExtras(); String newNumber = "";
-		 * 
-		 * ArrayList<String> number = bundle.getStringArrayList("Number"); for
-		 * (int i = 0; i < number.size(); i++) { newNumber +=
-		 * number.get(i).replace("-", "") + ";"; }
-		 * inputPhoneNumber.setText(newNumber); OrgNumber = newNumber; //
-		 * Log.i("OrgMsg", OrgNumber); }
-		 */
 		// handeler messages send from sqlThread
 		sqlCreHandeler = new Handler() {
 
@@ -252,7 +238,7 @@ public class Send extends Activity {
 							"Please check phone number and message",
 							Toast.LENGTH_SHORT).show();
 		} else {
-			String[] smsNumberGroup = smsNumber.split(";");
+			String[] smsNumberGroup = smsNumber.split(";\n");
 
 			for (int i = 0; i < smsNumberGroup.length; i++) {
 				// Use getDefault() got a SmsManager Instance
@@ -260,19 +246,19 @@ public class Send extends Activity {
 				// Create a Intent name is SMS
 				Intent intent = new Intent("SMS");
 				// Put Sending Phonenum into intent
-				String phoneNum = smsNumberGroup[i];
+				String phoneNum = smsNumberGroup[i].replaceAll("\\D", "");
 				Log.i("PhoneNum", phoneNum);
 				intent.putExtra("SmsNumber", phoneNum);
 				// Use getBroadcast() got a PendingIntent Broadcast Instance
 				PendingIntent pintent = PendingIntent.getBroadcast(Send.this,
 						0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 				// Use SednTextMessage() send TextMessage
-				smsManager.sendTextMessage(smsNumberGroup[i], null, smsContent,
-						pintent, null);
+				smsManager.sendTextMessage(phoneNum, null, smsContent, pintent,
+						null);
 
 				Toast.makeText(
 						getApplicationContext(),
-						"Number is :" + smsNumberGroup[i].toString() + "\n"
+						"Number is :" + phoneNum.toString() + "\n"
 								+ "SMS Content is :"
 								+ inputMsg.getText().toString(),
 						Toast.LENGTH_SHORT).show();
