@@ -33,6 +33,7 @@ public class Contact extends Activity {
 	private ArrayList<HashMap<String, Object>> listItem;
 	private ListView listContact;
 	private ArrayList<String> PhoneNum;
+	private ArrayList<String> DispName;
 	private int positon;
 
 	@Override
@@ -44,6 +45,8 @@ public class Contact extends Activity {
 
 		listItem = new ArrayList<HashMap<String, Object>>();
 		PhoneNum = new ArrayList<String>();
+		DispName = new ArrayList<String>();
+		
 		Cursor cur = getContentResolver().query(
 				ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
 				null,
@@ -97,11 +100,12 @@ public class Contact extends Activity {
 				/* ¼ÇÂ¼Ñ¡ÖÐ×´Ì¬ */
 
 				if (adapter.checkstate.get(arg2)) {
-					PhoneNum.remove(listItem.get(arg2).get("PhoneNum")
-							.toString());
+					PhoneNum.remove(listItem.get(arg2).get("PhoneNum").toString());
+					DispName.remove(listItem.get(arg2).get("dispName").toString());
 					cb.setChecked(false);
 				} else {
 					PhoneNum.add(listItem.get(arg2).get("PhoneNum").toString());
+					DispName.add(listItem.get(arg2).get("dispName").toString());
 					cb.setChecked(true);
 				}
 				adapter.checkstate.put(arg2, cb.isChecked());
@@ -131,7 +135,9 @@ public class Contact extends Activity {
 		Intent intent = new Intent();
 		switch (item_id) {
 		case 0:
+			
 			selectedContact.putStringArrayList("Number", PhoneNum);
+			selectedContact.putStringArrayList("DispName", DispName);
 			intent.putExtras(selectedContact);
 			intent.setClass(Contact.this, Send.class);
 			startActivity(intent);
