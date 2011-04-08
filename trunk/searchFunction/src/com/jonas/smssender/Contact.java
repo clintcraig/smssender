@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import com.jonas.smssender.R;
 import android.app.Activity;
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -42,6 +43,22 @@ public class Contact extends Activity {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.contact);
+		
+		//Search keyword Handler
+		Intent queryIntent = getIntent(); 
+		String queryAction = queryIntent.getAction();
+		/*
+		 * First,if Intent Action equals Intent.ACTION_SEARCH then get SearchManager.QUERY
+	     * Then and lookup the whether Contact is in System Contact DB
+	     * Finally,notify System to refresh the ListView
+	     */
+		if(Intent.ACTION_SEARCH.equals(queryAction))
+		{
+			String searchKeywords = queryIntent.getStringExtra(SearchManager.QUERY);
+			Log.i("Search Keywords", searchKeywords);
+		}
+			
+		
 		listContact = (ListView) this.findViewById(R.id.listContact);
 
 		listItem = new ArrayList<HashMap<String, Object>>();
