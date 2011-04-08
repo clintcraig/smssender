@@ -37,33 +37,19 @@ public class Contact extends Activity {
 	// DispName
 	private ArrayList<String> PhoneNum;
 	private ArrayList<String> DispName;
+	private MyAdapter adapter;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.contact);
-		
-		//Search keyword Handler
-		Intent queryIntent = getIntent(); 
-		String queryAction = queryIntent.getAction();
-		/*
-		 * First,if Intent Action equals Intent.ACTION_SEARCH then get SearchManager.QUERY
-	     * Then and lookup the whether Contact is in System Contact DB
-	     * Finally,notify System to refresh the ListView
-	     */
-		if(Intent.ACTION_SEARCH.equals(queryAction))
-		{
-			String searchKeywords = queryIntent.getStringExtra(SearchManager.QUERY);
-			Log.i("Search Keywords", searchKeywords);
-		}
-			
-		
+
 		listContact = (ListView) this.findViewById(R.id.listContact);
 
-		listItem = new ArrayList<HashMap<String, Object>>();
 		PhoneNum = new ArrayList<String>();
 		DispName = new ArrayList<String>();
+		listItem = new ArrayList<HashMap<String, Object>>();
 
 		Cursor cur = getContentResolver().query(
 				ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
@@ -99,7 +85,7 @@ public class Contact extends Activity {
 
 		}
 		cur.close();
-		final MyAdapter adapter = new MyAdapter(this, listItem);
+		adapter = new MyAdapter(this, listItem);
 		listContact.setAdapter(adapter);
 		listContact.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
 		listContact.setFocusable(true);
@@ -132,6 +118,47 @@ public class Contact extends Activity {
 			}
 
 		});
+
+		// Search keyword Handler
+		Intent queryIntent = getIntent();
+		String queryAction = queryIntent.getAction();
+		/*
+		 * First,if Intent Action equals Intent.ACTION_SEARCH then get
+		 * SearchManager.QUERY Then and lookup the whether Contact is in System
+		 * Contact DB Finally,notify System to refresh the ListView
+		 */
+		if (Intent.ACTION_SEARCH.equals(queryAction)) {
+			String searchKeywords = queryIntent
+					.getStringExtra(SearchManager.QUERY);
+			Log.i("Search Keywords", searchKeywords);
+
+			Cursor cursor = getContentResolver().query(
+					ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+					null,
+					ContactsContract.CommonDataKinds.Nickname.DISPLAY_NAME
+							+ "=" + "'" + searchKeywords.trim() + "'", null,
+					null);
+			while (cursor.moveToNext()) {
+				String dispName = cursor
+						.getString(cursor
+								.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+				String phoneNum = cursor
+						.getString(cursor
+								.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+				// cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+
+				Log.i("DispName", dispName);
+				Log.i("PhoneNum", phoneNum);
+
+				HashMap<String, Object> readMap = new HashMap<String, Object>();
+				readMap.put("dispName", dispName);
+
+				readMap.put("PhoneNum", phoneNum);
+				listItem.clear();
+				listItem.add(readMap);
+				adapter.notifyDataSetChanged();
+			}
+		}
 
 	}
 
