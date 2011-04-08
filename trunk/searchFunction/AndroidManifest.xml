@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+	package="com.jonas.smssender" android:versionCode="1"
+	android:versionName="1.0">
+	<application android:icon="@drawable/icon" android:label="@string/app_name">
+		<activity android:name=".Sms" android:label="@string/app_name">
+
+		</activity>
+		<activity android:name=".Send" android:label="节日短信"
+			android:windowSoftInputMode="stateVisible|adjustPan">
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN" />
+				<category android:name="android.intent.category.LAUNCHER" />
+			</intent-filter>
+
+		</activity>
+		<activity android:name=".Contact" android:label="Contact">
+
+		</activity>
+		<service android:name=".SmsService">
+			<intent-filter>
+				<action android:name="com.jonas.action.SMS_SERVICE">
+				</action>
+				<category android:name="android.intent.category.DEFAULT">
+				</category>
+			</intent-filter>
+		</service>
+
+		<receiver android:name=".AppWidget">
+			<intent-filter>
+				<action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+			</intent-filter>
+			<meta-data android:name="android.appwidget.provider"
+				android:resource="@xml/appwidget_info">
+			</meta-data>
+		</receiver>
+
+	</application>
+	<uses-sdk android:minSdkVersion="8" />
+	<uses-permission android:name="android.permission.READ_CONTACTS" />
+	<uses-permission android:name="android.permission.SEND_SMS" />
+	<uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
+
+</manifest> 
