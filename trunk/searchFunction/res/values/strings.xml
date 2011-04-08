@@ -3,4 +3,5 @@
     <string name="app_name">节日短信</string>
     <string name="OK">OK</string>
     <string name="Cancel">Cancel</string>
+    <string name="search_hint">Search Contact</string>
 </resources>
