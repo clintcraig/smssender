@@ -252,10 +252,22 @@ public class Send extends Activity {
 				// Use getBroadcast() got a PendingIntent Broadcast Instance
 				PendingIntent pintent = PendingIntent.getBroadcast(Send.this,
 						0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-				// Use SednTextMessage() send TextMessage
+                if(smsContent.length()>70)
+                {
+                	ArrayList<String> smsDivide = new ArrayList<String>();
+                	smsDivide = smsManager.divideMessage(smsContent);
+                	for(String sms:smsDivide)
+                	{
+                		smsManager.sendTextMessage(phoneNum, null, sms, pintent,null);
+                	}
+                }
+                else
+                {
+                	// Use SendTextMessage() send TextMessage
+                
 				smsManager.sendTextMessage(phoneNum, null, smsContent, pintent,
 						null);
-
+                }
 				Toast.makeText(
 						getApplicationContext(),
 						"Number is :" + phoneNum.toString() + "\n"
