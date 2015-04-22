@@ -1,0 +1,1 @@
+a android app that can send greeting sms to group contects,
